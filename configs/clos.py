@@ -7,6 +7,12 @@ dataset = dict(
 
 )
 
+encoder = dict(
+    backbone='resnet50',
+    latent_dims_1=2048,
+    latent_dims_2=256,
+)
+
 work_dirs = dict(
     path='experiments',
     ckpt_dir='checkpoints',
@@ -21,8 +27,6 @@ training_parameters = dict(
     workers=16,
     temperature=0.3,
     encoder_momentum=0.99,
-    latent_dims_1=2048,
-    latent_dims_2=256,
     grouping_threshold=0.7
 )
 
