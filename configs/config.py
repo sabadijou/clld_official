@@ -1,7 +1,10 @@
 dataset = dict(
     path='/media/ali/ssd/Imagenet/train',
     sample_size=224,
-    seed=42
+    seed=42,
+    information_loss=0.3,
+    patch_size=14,
+
 )
 
 work_dirs = dict(
