@@ -6,10 +6,13 @@ import matplotlib.pyplot as plt
 import itertools
 import random
 import cv2
+
 ####################################################################
 patch_size = 14
 image_size = (224, 224)
 information_loss = 0.3
+#Patchsize equal gamma and lambda
+
 start_points = [i for i in range(0, 224, patch_size)]
 coor_list = list(itertools.combinations(start_points, 2)) + \
             list(itertools.combinations(start_points.__reversed__(), 2)) + \
@@ -22,10 +25,10 @@ image_lists = os.listdir(patch_dir)
 ####################################################################
 for img in image_lists:
     print(img)
-    start_points = [i for i in range (0, 224, patch_size)]
-    coor_list = list (itertools.combinations (start_points, 2)) + \
-                list (itertools.combinations (start_points.__reversed__ (), 2)) + \
-                [(i, i) for i in range (0, 224, patch_size)]
+    start_points = [i for i in range(0, 224, patch_size)]
+    coor_list = list(itertools.combinations(start_points, 2)) + \
+                list(itertools.combinations(start_points.__reversed__(), 2)) + \
+                [(i, i) for i in range(0, 224, patch_size)]
     image = Image.open(os.path.join(patch_dir, img))
     image = image.resize(image_size)
     image = np.asarray(image)
@@ -41,8 +44,3 @@ for img in image_lists:
         image[coordinate[0]:coordinate[0] + patch_size, coordinate[1]:coordinate[1] + patch_size, ...] = random_patch
 
     cv2.imwrite(os.path.join(r'C:\Users\asus\Desktop\lane\converted', img), cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
-# plt.imshow(image)
-# plt.axis('off')
-# plt.
-# plt.savefig(r'patch.jpg')
-# plt.show()
