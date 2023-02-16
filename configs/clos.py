@@ -3,8 +3,8 @@ dataset = dict(
     sample_size=224,
     seed=42,
     information_loss=0.3,
-    patch_size=14,
-
+    _lambda=14,
+    _gamma=14
 )
 
 encoder = dict(
