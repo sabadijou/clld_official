@@ -27,7 +27,9 @@ training_parameters = dict(
     workers=16,
     temperature=0.3,
     encoder_momentum=0.99,
-    grouping_threshold=0.7
+    grouping_threshold=0.7,
+    alpha=3,
+    out_scale=0.001
 )
 
 distributed_training = dict(
