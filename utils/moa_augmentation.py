@@ -1,46 +1,54 @@
-import os
-
-from PIL import Image
 import numpy as np
-import matplotlib.pyplot as plt
 import itertools
 import random
-import cv2
 
-####################################################################
-patch_size = 14
-image_size = (224, 224)
-information_loss = 0.3
-#Patchsize equal gamma and lambda
 
-start_points = [i for i in range(0, 224, patch_size)]
-coor_list = list(itertools.combinations(start_points, 2)) + \
-            list(itertools.combinations(start_points.__reversed__(), 2)) + \
-            [(i, i) for i in range(0, 224, patch_size)]
+class MOA:
+    def __init__(self, lambda_=14,
+                 gamma_=14,
+                 information_loss=0.3,
+                 height=224,
+                 weight=224):
+        super(MOA, self).__init__()
 
-number_of_patches = int(len(coor_list) * information_loss)
-####################################################################
-patch_dir = r'C:\Users\asus\Desktop\lane\nat_barrat'
-image_lists = os.listdir(patch_dir)
-####################################################################
-for img in image_lists:
-    print(img)
-    start_points = [i for i in range(0, 224, patch_size)]
-    coor_list = list(itertools.combinations(start_points, 2)) + \
-                list(itertools.combinations(start_points.__reversed__(), 2)) + \
-                [(i, i) for i in range(0, 224, patch_size)]
-    image = Image.open(os.path.join(patch_dir, img))
-    image = image.resize(image_size)
-    image = np.asarray(image)
-    if len(image.shape) == 2:
-        continue
-    if image.shape[2] == 4:
-        image = image[:, :, :3]
-    ####################################################################
-    random_patch = np.random.randint(0, 256, size=(patch_size, patch_size, 3))
-    for i in range(number_of_patches):
-        coordinate = random.choice(coor_list)
-        coor_list.remove(coordinate)
-        image[coordinate[0]:coordinate[0] + patch_size, coordinate[1]:coordinate[1] + patch_size, ...] = random_patch
+        self.lambda_ = lambda_
 
-    cv2.imwrite(os.path.join(r'C:\Users\asus\Desktop\lane\converted', img), cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
+        self.gamma_ = gamma_
+
+        self.IF = information_loss
+
+        self.height = height
+
+        self.weight = weight
+
+    def __call__(self, x):
+        coor_list = self._make_coordinates()
+        num_patches = self.cal_remove_patches(len_all_coordinates=len(coor_list))
+
+        if len(x.shape) == 2:
+            return x
+        if x.shape[2] == 4:
+            x = x[:, :, :3]
+
+        random_patch = np.random.randint(0, 256, size=(self.gamma_, self.lambda_, 3))
+
+        for i in range(num_patches):
+            coordinate = random.choice(coor_list)
+            coor_list.remove(coordinate)
+            x[coordinate[0]:coordinate[0] + self.gamma_,
+              coordinate[1]:coordinate[1] + self.lambda_, ...] = random_patch
+
+        return x
+
+    def _make_coordinates(self):
+        coor_list_h = [i for i in range(0, self.height, self.gamma_)]
+        coor_list_w = [i for i in range(0, self.weight, self.lambda_)]
+
+        return list(itertools.combinations(coor_list_h, 2)) + \
+            list(itertools.combinations(coor_list_w.__reversed__(), 2)) + \
+            [(i, i) for i in range(0, 224, self.lambda_)]
+
+    def cal_remove_patches(self, len_all_coordinates):
+        number_of_patches = int(len_all_coordinates * self.IF)
+
+        return number_of_patches
