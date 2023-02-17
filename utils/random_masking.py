@@ -3,13 +3,13 @@ import itertools
 import random
 
 
-class MOA:
+class RandomMasking:
     def __init__(self, lambda_=14,
                  gamma_=14,
                  information_loss=0.3,
                  height=224,
                  weight=224):
-        super(MOA, self).__init__()
+        super(RandomMasking, self).__init__()
 
         self.lambda_ = lambda_
 

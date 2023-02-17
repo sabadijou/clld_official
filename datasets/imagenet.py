@@ -3,7 +3,7 @@ Main Source: https://github.com/dev-sungman/Propagate-Yourself-Pytorch
 Modified for CLoS
 '''
 
-from utils.moa_augmentation import MOA
+from utils.random_masking import RandomMasking
 from torch.utils.data import Dataset
 from utils.transforms import *
 import numpy as np
@@ -22,11 +22,11 @@ class CLoSDataSet(Dataset):
         self.samples = self._make_dataset(self.root, self.class_to_idx)
         self.targets = [s[1] for s in self.samples]
 
-        self.moa_augmentation = MOA(self.args.dataset['_lambda'],
-                                    self.args.dataset['_gamma'],
-                                    self.args.dataset['information_loss'],
-                                    self.data_size[0],
-                                    self.data_size[1])
+        self.masking = RandomMasking(self.args.dataset['_lambda'],
+                                              self.args.dataset['_gamma'],
+                                              self.args.dataset['information_loss'],
+                                              self.data_size[0],
+                                              self.data_size[1])
 
         self.transform = transforms.Compose([
             transforms.RandomApply([
@@ -70,7 +70,7 @@ class CLoSDataSet(Dataset):
     def __getitem__(self, index):
         path, target = self.samples[index]
         sample = self._load_image(path)
-        sample_augmented = self.moa_augmentation(np.asarray(sample))
+        sample_augmented = self.masking(np.asarray(sample))
         sample_augmented = Image.fromarray(sample_augmented)
 
         choose_sample = random.choice([True, False])
