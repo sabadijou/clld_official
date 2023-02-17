@@ -4,6 +4,12 @@ import torch
 
 
 class CrossCorrelation(nn.Module):
+    '''
+    The implementation of cross-correlation is employed by the CLoS algorithm.
+    source: https://github.com/huanglianghua/siamfc-pytorch.git
+    Note that the out_scale hyper-parameter is used to scale the logits to around 0~10.
+    Please refer to this issue for more details: https://github.com/huanglianghua/siamfc-pytorch/issues/24
+    '''
     def __init__(self, out_scale=0.001):
         super(CrossCorrelation, self).__init__ ()
         self.out_scale = out_scale
