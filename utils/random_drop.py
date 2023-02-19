@@ -3,13 +3,13 @@ import itertools
 import random
 
 
-class RandomMasking:
+class RandomDrop:
     def __init__(self, lambda_=14,
                  gamma_=14,
                  information_loss=0.3,
                  height=224,
                  weight=224):
-        super(RandomMasking, self).__init__()
+        super(RandomDrop, self).__init__()
 
         self.lambda_ = lambda_
 
