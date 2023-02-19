@@ -1,12 +1,12 @@
-import torch
+'''
+Source : Torchvision
+Modified for CLoS
+'''
+
 from torch import nn
-import torch.nn.functional as F
 from torch.hub import load_state_dict_from_url
 
-
-# This code is borrow from torchvision.
-
-model_urls = {
+ckpts = {
     'resnet18': 'https://download.pytorch.org/models/resnet18-5c106cde.pth',
     'resnet34': 'https://download.pytorch.org/models/resnet34-333f7ec4.pth',
     'resnet50': 'https://download.pytorch.org/models/resnet50-19c8e357.pth',
@@ -41,10 +41,6 @@ class BasicBlock(nn.Module):
         if groups != 1 or base_width != 64:
             raise ValueError(
                 'BasicBlock only supports groups=1 and base_width=64')
-        # if dilation > 1:
-        #     raise NotImplementedError(
-        #         "Dilation > 1 not supported in BasicBlock")
-        # Both self.conv1 and self.downsample layers downsample the input when stride != 1
         self.conv1 = conv3x3(inplanes, planes, stride, dilation=dilation)
         self.bn1 = norm_layer(planes)
         self.relu = nn.ReLU(inplace=True)
@@ -81,7 +77,7 @@ class Bottleneck(nn.Module):
         if norm_layer is None:
             norm_layer = nn.BatchNorm2d
         width = int(planes * (base_width / 64.)) * groups
-        # Both self.conv2 and self.downsample layers downsample the input when stride != 1
+
         self.conv1 = conv1x1(inplanes, width)
         self.bn1 = norm_layer(width)
         self.conv2 = conv3x3(width, width, stride, groups, dilation)
@@ -170,7 +166,6 @@ class ResNet(nn.Module):
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
         self.in_channels = [64, 128, 256, 512]
-        #print(layers, block, in_channels)
         self.layer1 = self._make_layer(block, self.in_channels[0], layers[0])
         self.layer2 = self._make_layer(block, self.in_channels[1], layers[1], stride=2,
                                        dilate=replace_stride_with_dilation[0])
@@ -182,7 +177,7 @@ class ResNet(nn.Module):
         self.expansion = block.expansion
 
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.projection = nn.Sequential (
+        self.projection = nn.Sequential(
             nn.Conv2d(512 * block.expansion, dim1, kernel_size=1),
             norm_layer(dim1),
             nn.ReLU(inplace=True),
@@ -251,7 +246,7 @@ class ResNet(nn.Module):
 def _resnet(arch, block, layers, pretrained, progress, **kwargs):
     model = ResNet(block=block, layers=layers, **kwargs)
     if pretrained:
-        state_dict = load_state_dict_from_url(model_urls[arch],
+        state_dict = load_state_dict_from_url(ckpts[arch],
                                               progress=progress)
         model.load_state_dict(state_dict, strict=False)
     return model
