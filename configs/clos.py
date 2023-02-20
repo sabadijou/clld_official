@@ -11,13 +11,18 @@ dataset = dict(
 encoder = dict(
     backbone='resnet50',
     latent_dims_1=2048,
-    latent_dims_2=256,
+    latent_dims_2=256
 )
 
 work_dirs = dict(
     path='experiments',
     ckpt_dir='checkpoints',
     log_dir='runs'
+)
+
+ppm_module = dict(
+    input_channels=256,
+    output_channels=256
 )
 
 training_parameters = dict(
