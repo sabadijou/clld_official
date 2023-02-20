@@ -2,9 +2,9 @@ import torch.nn.functional as F
 import torch.nn as nn
 
 
-class ClassificationLoss(nn.Module):
+class InstanceLoss(nn.Module):
     def __init__(self):
-        super(ClassificationLoss, self).__init__()
+        super(InstanceLoss, self).__init__()
 
     def forward(self, x, y):
         x = F.normalize(x, dim=-1, p=2)
