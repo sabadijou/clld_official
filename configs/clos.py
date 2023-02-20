@@ -1,5 +1,6 @@
 dataset = dict(
     path='/media/ali/ssd/Imagenet/train',
+    work_dir= 'work_dir',
     sample_size=224,
     seed=42,
     information_loss=0.3,
@@ -37,5 +38,5 @@ distributed_training = dict(
     rank=0,
     env_ip='tcp://10.132.136.34:5019',
     backend='nccl',
-    gpu_idx=[0, 1],
+    gpus_idx=[0, 1],
 )
