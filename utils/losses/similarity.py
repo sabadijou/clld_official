@@ -30,13 +30,13 @@ class SimilarityLoss(nn.Module):
     def __init__(self, alpha=3, out_scale=0.001):
         super(SimilarityLoss, self).__init__()
         self.cross_correlation_opt = CrossCorrelation(out_scale=out_scale)
-        self.distance = nn.CosineSimilarity(dim=1)
+        self.cos = nn.CosineSimilarity(dim=1)
         self.alpha = alpha
 
-    def forward(self, fm_1, fm_2):
-        stack_1 = self.apply_cc(fm_1, fm_2)
-        stack_2 = self.apply_cc(fm_2, fm_1)
-        loss = self.distance(stack_1, stack_2)
+    def forward(self, y, y_prime):
+        map_1 = self.apply_cc(y, y_prime)
+        map_2 = self.apply_cc(y_prime, y)
+        loss = self.cos(map_1, map_2)
         return loss.mean()
 
     def apply_cc(self, flat, depth):
