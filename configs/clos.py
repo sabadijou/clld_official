@@ -30,13 +30,22 @@ training_parameters = dict(
     num_epochs=100,
     batch_size=1024,
     init_lr=1,
-    weight_decay=1e-5,
+    weight_decay=15e-7,
     workers=16,
+    optim_eps=1e-8,
     temperature=0.3,
     encoder_momentum=0.99,
     grouping_threshold=0.7,
     alpha=3,
-    out_scale=0.001
+    out_scale=0.001,
+    coeff_lamda=1,
+    coeff_beta=2,
+    coeff_Xi=1
+)
+
+resume = dict(
+    start_epoch=0,
+    ckpt_path=None
 )
 
 distributed_training = dict(
