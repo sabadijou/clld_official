@@ -12,11 +12,10 @@ import os
 
 
 class CLoSDataSet(Dataset):
-    def __init__(self, root,
-                 args):
-        self.root = root
-        self.data_size = args.dataset['sample_size']
-        self.args = args
+    def __init__(self, cfg):
+        self.root = cfg.dataset['path']
+        self.data_size = cfg.dataset['sample_size']
+        self.args = cfg
 
         self.classes, self.class_to_idx = self._find_classes(self.root)
         self.samples = self._make_dataset(self.root, self.class_to_idx)
