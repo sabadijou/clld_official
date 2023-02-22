@@ -1,3 +1,4 @@
+from encoder_wrapper import EncoderWrapper
 from utils.ppm import PPM
 import torch.nn as nn
 import numpy as np
@@ -5,7 +6,7 @@ import torch
 
 
 class CLoS(nn.Module):
-    def __init__(self, encoder, cfg):
+    def __init__(self, cfg):
         super(CLoS, self).__init__()
         self.cfg = cfg
         self.moment_iter = 0
@@ -13,11 +14,9 @@ class CLoS(nn.Module):
         self.moment = self.cfg.training_parameters['encoder_momentum']
         self.T = self.cfg.training_parameters['temperature']
 
-        self.base_encoder = encoder(dim1=self.cfg.encoder['latent_dims_1'],
-                                    dim2=self.cfg.encoder['latent_dims_2'])
+        self.base_encoder = EncoderWrapper(cfg.encoder)()
 
-        self.moment_encoder = encoder(dim1=self.cfg.encoder['latent_dims_1'],
-                                      dim2=self.cfg.encoder['latent_dims_2'])
+        self.moment_encoder = EncoderWrapper(cfg.encoder)()
 
         self.ppm_module = PPM(input_channels=self.cfg.ppm_module['input_channels'],
                               out_channels=self.cfg.ppm_module['output_channels'])
