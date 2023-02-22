@@ -117,20 +117,12 @@ class ResNetWrapper(nn.Module):
         super(ResNetWrapper, self).__init__()
         self.cfg = cfg
         self.in_channels = [64, 128, 256, 512]
-        if 'in_channels' in cfg.backbone:
-            self.in_channels = cfg.backbone.in_channels
-        self.model = eval(cfg.backbone.resnet)(
-            pretrained=cfg.backbone.pretrained,
-            replace_stride_with_dilation=cfg.backbone.replace_stride_with_dilation, in_channels=self.in_channels)
-        self.out = None
-        if cfg.backbone.out_conv:
-            out_channel = 512
-            for chan in reversed(self.in_channels):
-                if chan < 0: continue
-                out_channel = chan
-                break
-            self.out = conv1x1(
-                out_channel * self.model.expansion, 128)
+        self.model = eval(cfg.backbone)(
+            pretrained=False,
+            replace_stride_with_dilation=cfg.replace_stride_with_dilation,
+            in_channels=self.in_channels,
+            dim1=cfg.dim1,
+            dim2=cfg.dim2)
 
     def forward(self, x):
         x = self.model(x)
