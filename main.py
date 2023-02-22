@@ -20,7 +20,7 @@ def main():
     cfg.distributed_training['world_size'] = gpus_per_node * args.world_size
 
     train = Trainer(cfg)
-    torch.multiprocessing.spawn(train.main_worker, nprocs=gpus_per_node, args=(gpus_per_node, cfg))
+    torch.multiprocessing.spawn(train.main_worker, nprocs=gpus_per_node, args=(gpus_per_node,))
 
 
 def parse_args():
