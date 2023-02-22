@@ -11,7 +11,8 @@ dataset = dict(
 encoder = dict(
     backbone='resnet50',
     latent_dims_1=2048,
-    latent_dims_2=256
+    latent_dims_2=256,
+    replace_stride_with_dilation=[False, True, True],
 )
 
 work_dirs = dict(
