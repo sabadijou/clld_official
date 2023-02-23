@@ -5,7 +5,8 @@ dataset = dict(
     seed=42,
     information_loss=0.3,
     _lambda=14,
-    _gamma=14
+    _gamma=14,
+    threshold=0.7
 )
 
 encoder = dict(
@@ -28,7 +29,7 @@ ppm_module = dict(
 
 training_parameters = dict(
     num_epochs=100,
-    batch_size=1024,
+    batch_size=32,
     init_lr=1,
     weight_decay=15e-7,
     workers=16,
@@ -40,7 +41,8 @@ training_parameters = dict(
     out_scale=0.001,
     coeff_lamda=1,
     coeff_beta=2,
-    coeff_Xi=1
+    coeff_Xi=1,
+    seed=42
 )
 
 resume = dict(
@@ -55,3 +57,6 @@ distributed_training = dict(
     backend='nccl',
     gpus_idx=[0, 1],
 )
+
+device = None
+lr = None
