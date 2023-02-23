@@ -47,7 +47,7 @@ training_parameters = dict(
 
 resume = dict(
     start_epoch=0,
-    ckpt_path=None
+    ckpt_path=r''
 )
 
 distributed_training = dict(

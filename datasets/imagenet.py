@@ -24,8 +24,8 @@ class CLoSDataSet(Dataset):
         self.masking = RandomDrop(self.args.dataset['_lambda'],
                                               self.args.dataset['_gamma'],
                                               self.args.dataset['information_loss'],
-                                              self.data_size[0],
-                                              self.data_size[1])
+                                              self.data_size,
+                                              self.data_size)
 
         self.transform = transforms.Compose([
             transforms.RandomApply([
@@ -69,7 +69,7 @@ class CLoSDataSet(Dataset):
     def __getitem__(self, index):
         path, target = self.samples[index]
         sample = self._load_image(path)
-        sample_augmented = self.masking(np.asarray(sample))
+        sample_augmented = self.masking(np.asarray(sample.resize(size=(self.data_size, self.data_size))))
         sample_augmented = Image.fromarray(sample_augmented)
 
         choose_sample = random.choice([True, False])
@@ -156,8 +156,8 @@ class CLoSDataSet(Dataset):
 
         dist_matrix = torch.sqrt(dist_x_matrix ** 2 + dist_y_matrix ** 2) / (diaglen / 7)
         A_matrix = torch.zeros((dist_matrix.shape))
-        A_matrix[dist_matrix < self.args.threshold] = 1.
-        A_matrix[dist_matrix >= self.args.threshold] = 0.
+        A_matrix[dist_matrix < self.args.dataset['threshold']] = 1.
+        A_matrix[dist_matrix >= self.args.dataset['threshold']] = 0.
 
         return A_matrix
 

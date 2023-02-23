@@ -1,4 +1,4 @@
-from encoder_wrapper import EncoderWrapper
+from .encoder_wrapper import EncoderWrapper
 from utils.ppm import PPM
 import torch.nn as nn
 import numpy as np

@@ -29,7 +29,6 @@ class RandomDrop:
             return x
         if x.shape[2] == 4:
             x = x[:, :, :3]
-
         random_patch = np.random.randint(0, 256, size=(self.gamma_, self.lambda_, 3))
 
         for i in range(num_patches):

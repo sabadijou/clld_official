@@ -22,13 +22,16 @@ class Trainer:
         self.cfg = cfg
         self.model = CLoS(self.cfg)
         self.lr = self.cfg.training_parameters['init_lr'] * self.cfg.training_parameters['batch_size'] / 256
-        self.loader = self.setup_dataset()
+
         self.loss_1 = grouping.GroupingLoss()
         self.loss_2 = similarity.SimilarityLoss(alpha=self.cfg.training_parameters['alpha'],
                                                 out_scale=self.cfg.training_parameters['out_scale'])
         self.loss_3 = instance.InstanceLoss()
+        self.device = None
 
-    def main_worker(self, gpus_per_node):
+    def main_worker(self, gpu, gpus_per_node, cfg):
+        self.cfg = cfg
+        self.gpu = gpu
         self.cfg.distributed_training['rank'] = self.cfg.distributed_training['rank'] * \
                                         gpus_per_node + \
                                         self.cfg.distributed_training['gpus_idx']
@@ -56,7 +59,7 @@ class Trainer:
                                             weight_decay=self.cfg.training_parameters['weight_decay']),
                               eps=self.cfg.training_parameters['optim_eps'])
         cudnn.benchmark = True
-
+        self.loader = self.setup_dataset()
         for epoch in range(self.cfg.resume['start_epoch'],
                            self.cfg.training_parameters['num_epochs']):
 

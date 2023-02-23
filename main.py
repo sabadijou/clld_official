@@ -1,8 +1,9 @@
-from runner.trainer import Trainer
+from runner.trainer import *
 import configs.clos as cfg
 import argparse
+import random
 import torch
-
+from utils.config import Config
 # To do : Add recorder
 
 
@@ -15,13 +16,21 @@ def main():
     cfg.training_parameters['alpha'] = args.alpha
     cfg.distributed_training['gpus_idx'] = args.gpus_id
 
-
+    random.seed(cfg.training_parameters['seed'])
+    torch.manual_seed(cfg.training_parameters['seed'])
+    cudnn.deterministic = True
     gpus_per_node = len(cfg.distributed_training['gpus_idx'])
     cfg.distributed_training['world_size'] = gpus_per_node * args.world_size
-
-    train = Trainer(cfg)
-    torch.multiprocessing.spawn(train.main_worker, nprocs=gpus_per_node, args=(gpus_per_node,))
-
+    args.distributed_training = cfg.distributed_training
+    args.dataset = cfg.dataset
+    args.encoder = cfg.encoder
+    args.work_dirs = cfg.work_dirs
+    args.ppm_module = cfg.ppm_module
+    args.training_parameters = cfg.training_parameters
+    args.resume = cfg.resume
+    args.devive = cfg.device
+    args.lr = cfg.lr
+    torch.multiprocessing.spawn(main_worker, nprocs=gpus_per_node, args=(gpus_per_node, args))
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train CLoS')
