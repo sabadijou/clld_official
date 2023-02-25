@@ -13,7 +13,7 @@ encoder = dict(
     backbone='resnet50',
     latent_dims_1=2048,
     latent_dims_2=256,
-    replace_stride_with_dilation=[False, True, True],
+    replace_stride_with_dilation=[False, False, False],
 )
 
 work_dirs = dict(
@@ -29,7 +29,7 @@ ppm_module = dict(
 
 training_parameters = dict(
     num_epochs=100,
-    batch_size=32,
+    batch_size=256,
     init_lr=1,
     weight_decay=15e-7,
     workers=16,
@@ -56,6 +56,8 @@ distributed_training = dict(
     env_ip='tcp://10.132.136.34:5019',
     backend='nccl',
     gpus_idx=[0, 1],
+    distributed=True,
+    multiprocessing_distributed = True
 )
 
 device = None
