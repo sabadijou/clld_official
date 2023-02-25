@@ -3,7 +3,7 @@ import configs.clos as cfg
 import argparse
 import random
 import torch
-from utils.config import Config
+from utils.config import convert_config
 # To do : Add recorder
 
 
@@ -21,15 +21,8 @@ def main():
     cudnn.deterministic = True
     gpus_per_node = len(cfg.distributed_training['gpus_idx'])
     cfg.distributed_training['world_size'] = gpus_per_node * args.world_size
-    args.distributed_training = cfg.distributed_training
-    args.dataset = cfg.dataset
-    args.encoder = cfg.encoder
-    args.work_dirs = cfg.work_dirs
-    args.ppm_module = cfg.ppm_module
-    args.training_parameters = cfg.training_parameters
-    args.resume = cfg.resume
-    args.devive = cfg.device
-    args.lr = cfg.lr
+    args = convert_config(args, cfg)
+
     torch.multiprocessing.spawn(main_worker, nprocs=gpus_per_node, args=(gpus_per_node, args))
 
 def parse_args():
