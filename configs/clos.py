@@ -1,6 +1,7 @@
 dataset = dict(
+    name='ImageNet',
     path='/media/ali/ssd/Imagenet/train',
-    work_dir= 'work_dir',
+    work_dir='work_dir',
     sample_size=224,
     seed=42,
     information_loss=0.3,
@@ -17,7 +18,7 @@ encoder = dict(
 )
 
 work_dirs = dict(
-    path='experiments',
+    path='../experiments',
     ckpt_dir='checkpoints',
     log_dir='runs'
 )
@@ -57,7 +58,7 @@ distributed_training = dict(
     backend='nccl',
     gpus_idx=[0, 1],
     distributed=True,
-    multiprocessing_distributed = True
+    multiprocessing_distributed=True
 )
 
 device = None
