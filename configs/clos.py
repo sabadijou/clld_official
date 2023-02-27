@@ -19,7 +19,6 @@ encoder = dict(
 
 work_dirs = dict(
     path='experiments',
-    ckpt_dir='checkpoints',
     log_dir='runs'
 )
 
