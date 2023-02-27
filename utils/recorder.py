@@ -48,8 +48,9 @@ class Recorder(object):
         self.loss_stats = defaultdict(SmoothedValue)
         self.batch_time = SmoothedValue()
         self.data_time = SmoothedValue()
-        self.max_epoch = self.cfg.training_parameters['num_epochs']
+        self.max_iter = 0
         self.lr = 0.
+
 
     def get_work_dir(self):
         now = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -87,5 +88,5 @@ class Recorder(object):
             loss_state.append('{}: {:.6f}'.format(k, v.avg))
         loss_state = '  '.join(loss_state)
 
-        recording_state = '  '.join(['epoch: {}', 'lr: {:.6f}', '{}'])
-        return recording_state.format(self.epoch, self.lr, loss_state)
+        recording_state = '  '.join(['epoch: {}', 'step: {}/{}','lr: {:.6f}', '{}'])
+        return recording_state.format(self.epoch, self.step, self.max_iter, self.lr, loss_state)
