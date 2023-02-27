@@ -24,8 +24,8 @@ def main():
     gpus_per_node = len(cfg.distributed_training['gpus_idx'])
     cfg.distributed_training['world_size'] = gpus_per_node * args.world_size
     args = convert_config(args, cfg)
-    log_recorder = Recorder(args)
-    torch.multiprocessing.spawn(main_worker, nprocs=gpus_per_node, args=(gpus_per_node, log_recorder, args))
+    # args.log_recorder = Recorder(args)
+    torch.multiprocessing.spawn(main_worker, nprocs=gpus_per_node, args=(gpus_per_node, args))
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train CLoS')

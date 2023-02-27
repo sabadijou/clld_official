@@ -2,6 +2,7 @@ from utils.losses import grouping, instance, similarity
 from datasets.imagenet import CLoSDataSet
 from torch.utils.data import DataLoader
 import torch.backends.cudnn as cudnn
+from utils.recorder import Recorder
 import torch.distributed as dist
 from models.clos import CLoS
 from einops import rearrange
@@ -13,11 +14,9 @@ import math
 import os
 
 
-#To_Do : resume from a checkpoint
-#To Do : add to arg
 
-
-def main_worker(gpu, gpus_per_node, log_recorder, cfg):
+def main_worker(gpu, gpus_per_node, cfg):
+    log_recorder = Recorder(cfg)
     log_recorder.logger.info('GPU ids : {}'.format(cfg.distributed_training['gpus_idx']))
     cfg.device = gpu
     if cfg.distributed_training['distributed']:
@@ -69,6 +68,13 @@ def main_worker(gpu, gpus_per_node, log_recorder, cfg):
         train_sampler.set_epoch(epoch)
         lr_scheduler(epoch, optimizer, cfg)
         train_step(model, loader, optimizer, cfg, gpu, log_recorder)
+        if not cfg.distributed_training['multiprocessing_distributed'] or \
+                (cfg.distributed_training['multiprocessing_distributed'] and
+                 cfg.distributed_training['rank'] % gpus_per_node == 0):
+            torch.save({'epoch': epoch + 1,
+                        'state_dict': model.state_dict(),
+                        'optimizer': optimizer.state_dict(),},
+                        os.path.join(log_recorder.work_dir, 'CLoS_{}.pth.tar'.format(epoch)))
         dist.barrier()
 
 
@@ -79,7 +85,9 @@ def train_step(model, loader, optimizer, cfg, gpu, log_recorder):
                                        out_scale=cfg.training_parameters['out_scale'])
     loss_3 = instance.InstanceLoss()
     flatten = lambda t: rearrange(t, 'b c h w -> b c (h w)')
+    log_recorder.max_iter = len(loader)
     for _iter, (images, targets) in enumerate(loader):
+        log_recorder.step = _iter
         images[0], images[1] = images[0].cuda(gpu, non_blocking=True), \
                                images[1].cuda(gpu, non_blocking=True)
 
@@ -104,11 +112,12 @@ def train_step(model, loader, optimizer, cfg, gpu, log_recorder):
         optimizer.zero_grad()
         loss_clos.backward()
         optimizer.step()
-        log_recorder.update_loss_stats({'Grouping Loss': loss1,
+        log_recorder.update_loss_stats({'CLoS Loss': loss_clos,
+                                        'Grouping Loss': loss1 / cfg.training_parameters['coeff_lamda'],
                                         'Similarity Loss': loss2 / cfg.training_parameters['coeff_beta'],
-                                        'Instance Loss': loss3})
-        log_recorder.recorder.record('train')
-
+                                        'Instance Loss': loss3 / cfg.training_parameters['coeff_Xi']})
+        if (_iter % 10 == 0) and (gpu == 0):
+            log_recorder.record('train')
 
 def lr_scheduler(epoch, optimizer, cfg):
     cfg.lr *= 0.5 * (1. + math.cos(math.pi * epoch /
