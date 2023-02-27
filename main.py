@@ -1,9 +1,11 @@
+from utils.config import convert_config
+from utils.recorder import Recorder
 from runner.trainer import *
 import configs.clos as cfg
 import argparse
 import random
 import torch
-from utils.config import convert_config
+
 # To do : Add recorder
 
 
@@ -22,8 +24,8 @@ def main():
     gpus_per_node = len(cfg.distributed_training['gpus_idx'])
     cfg.distributed_training['world_size'] = gpus_per_node * args.world_size
     args = convert_config(args, cfg)
-
-    torch.multiprocessing.spawn(main_worker, nprocs=gpus_per_node, args=(gpus_per_node, args))
+    log_recorder = Recorder(args)
+    torch.multiprocessing.spawn(main_worker, nprocs=gpus_per_node, args=(gpus_per_node, log_recorder, args))
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train CLoS')

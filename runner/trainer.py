@@ -17,7 +17,8 @@ import os
 #To Do : add to arg
 
 
-def main_worker(gpu, gpus_per_node, cfg):
+def main_worker(gpu, gpus_per_node, log_recorder, cfg):
+    log_recorder.logger.info('GPU ids : {}'.format(cfg.distributed_training['gpus_idx']))
     cfg.device = gpu
     if cfg.distributed_training['distributed']:
         if cfg.distributed_training['env_ip'] == 'env://' and \
@@ -26,8 +27,11 @@ def main_worker(gpu, gpus_per_node, cfg):
 
         if cfg.distributed_training['multiprocessing_distributed']:
             cfg.distributed_training['rank'] = cfg.distributed_training['rank'] * \
-                                               gpus_per_node +  cfg.device
+                                               gpus_per_node + cfg.device
 
+            log_recorder.logger.info('Dist Backend : {}'.format(cfg.distributed_training['backend']))
+            log_recorder.logger.info('Dist Url : {}'.format(cfg.distributed_training['env_ip']))
+            log_recorder.logger.info('World Size : {}'.format(cfg.distributed_training['world_size']))
             dist.init_process_group(backend=cfg.distributed_training['backend'],
                                     init_method=cfg.distributed_training['env_ip'],
                                     world_size=cfg.distributed_training['world_size'],
@@ -60,13 +64,15 @@ def main_worker(gpu, gpus_per_node, cfg):
     loader, train_sampler = setup_dataset(cfg)
     for epoch in range(cfg.resume['start_epoch'],
                        cfg.training_parameters['num_epochs']):
-
+        log_recorder.epoch = epoch
+        log_recorder.lr = cfg.lr
         train_sampler.set_epoch(epoch)
         lr_scheduler(epoch, optimizer, cfg)
-        train_step(model, loader, optimizer, cfg, gpu)
+        train_step(model, loader, optimizer, cfg, gpu, log_recorder)
         dist.barrier()
 
-def train_step(model, loader, optimizer, cfg, gpu):
+
+def train_step(model, loader, optimizer, cfg, gpu, log_recorder):
     model.train()
     loss_1 = grouping.GroupingLoss()
     loss_2 = similarity.SimilarityLoss(alpha=cfg.training_parameters['alpha'],
@@ -95,10 +101,13 @@ def train_step(model, loader, optimizer, cfg, gpu):
                  + loss_3(proj_pixel_two, target_proj_pixel_one)).mean()
 
         loss_clos = loss1 + loss2 + loss3
-        print(loss_clos.item(), loss1.item(), loss2.item(), loss3.item())
         optimizer.zero_grad()
         loss_clos.backward()
         optimizer.step()
+        log_recorder.update_loss_stats({'Grouping Loss': loss1,
+                                        'Similarity Loss': loss2 / cfg.training_parameters['coeff_beta'],
+                                        'Instance Loss': loss3})
+        log_recorder.recorder.record('train')
 
 
 def lr_scheduler(epoch, optimizer, cfg):
