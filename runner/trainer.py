@@ -74,7 +74,7 @@ def main_worker(gpu, gpus_per_node, cfg):
             torch.save({'epoch': epoch + 1,
                         'state_dict': model.state_dict(),
                         'optimizer': optimizer.state_dict(),},
-                        os.path.join(log_recorder.work_dir, 'CLoS_{}.pth.tar'.format(epoch)))
+                        os.path.join(log_recorder.work_dir, 'CLoS_{}.pth.tar'.format(epoch+1)))
         dist.barrier()
 
 
