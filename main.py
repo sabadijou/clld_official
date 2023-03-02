@@ -28,7 +28,7 @@ def main():
 def parse_args():
     parser = argparse.ArgumentParser(description='Train CLoS')
     parser.add_argument(
-        '--dataset_path', type=str, default=r'/media/ali/ssd/Imagenet/train',
+        '--dataset_path', type=str, default=r'/Imagenet/train',
         help='path to image folder')
 
     parser.add_argument(
