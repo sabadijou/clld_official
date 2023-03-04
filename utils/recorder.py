@@ -1,3 +1,4 @@
+import random
 from collections import deque, defaultdict
 from .logger import get_logger
 import datetime
@@ -56,7 +57,7 @@ class Recorder(object):
         now = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
         hyper_param_str = '_alpha_%1.0e_b_%d' % (self.cfg.training_parameters['alpha'],
                                                  self.cfg.training_parameters['batch_size'])
-        work_dir = os.path.join(self.cfg.work_dirs['path'], now + hyper_param_str)
+        work_dir = os.path.join(self.cfg.work_dirs['path'], now + hyper_param_str + str(random.random()))
 
         if not os.path.exists(work_dir):
             os.makedirs(work_dir)
