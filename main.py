@@ -23,7 +23,16 @@ def main():
     gpus_per_node = len(cfg.distributed_training['gpus_idx'])
     cfg.distributed_training['world_size'] = gpus_per_node * args.world_size
     args = convert_config(args, cfg)
-    torch.multiprocessing.spawn(main_worker, nprocs=gpus_per_node, args=(gpus_per_node, args))
+    #####################################################
+    if args.distributed_training['env_ip'] == 'env://' and \
+            args.distributed_training['rank'] == -1:
+        cfg.distributed_training['rank'] = int(os.environ["RANK"])
+    if args.distributed_training['multiprocessing_distributed']:
+        torch.multiprocessing.spawn(main_worker, nprocs=gpus_per_node, args=(gpus_per_node, args))
+    else:
+        main_worker(args.gpu, gpus_per_node, args)
+    ###################################################
+    # torch.multiprocessing.spawn(main_worker, nprocs=gpus_per_node, args=(gpus_per_node, args))
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train CLoS')
