@@ -10,9 +10,9 @@ def get_cosine_similarity(base, moment, dim=1):
     return cos_sim
 
 
-class GroupingLoss(nn.Module):
+class ConsistencyLoss(nn.Module):
     def __init__(self):
-        super(GroupingLoss, self).__init__()
+        super(ConsistencyLoss, self).__init__()
 
     def forward(self, en_base, en_momentum, matrix):
         distance = get_cosine_similarity(en_base, en_momentum)

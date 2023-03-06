@@ -1,4 +1,4 @@
-from utils.losses import grouping, instance, similarity
+from utils.losses import consistency, instance, similarity
 from datasets.imagenet import CLoSDataSet
 from torch.utils.data import DataLoader
 import torch.backends.cudnn as cudnn
@@ -80,7 +80,7 @@ def main_worker(gpu, gpus_per_node, cfg):
 
 def train_step(model, loader, optimizer, cfg, gpu, log_recorder):
     model.train()
-    loss_1 = grouping.GroupingLoss()
+    loss_1 = consistency.ConsistencyLoss()
     loss_2 = similarity.SimilarityLoss(alpha=cfg.training_parameters['alpha'],
                                        out_scale=cfg.training_parameters['out_scale'])
     loss_3 = instance.InstanceLoss()
