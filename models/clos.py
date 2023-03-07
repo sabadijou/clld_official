@@ -12,7 +12,6 @@ class CLoS(nn.Module):
         self.moment_iter = 0
 
         self.moment = self.cfg.training_parameters['encoder_momentum']
-        self.T = self.cfg.training_parameters['temperature']
 
         self.base_encoder = EncoderWrapper(cfg.encoder)()
 
