@@ -34,7 +34,6 @@ training_parameters = dict(
     weight_decay=15e-7,
     workers=16,
     optim_eps=1e-8,
-    temperature=0.3,
     encoder_momentum=0.99,
     grouping_threshold=0.7,
     alpha=3,
