@@ -16,7 +16,7 @@ def convertor(model, last_model):
 
 
 if __name__ == '__main__':
-    weight = torch.load(r'/home/ali/Documents/Resnet50_no_occlusion_masking.pth.tar',
+    weight = torch.load(r'../Documents/Resnet50_no_occlusion_masking.pth.tar',
                         map_location='cpu')
     resnet = torchvision.models.resnet50().to('cpu')
     resnet = convertor(resnet, weight)
