@@ -38,8 +38,8 @@ class Recorder(object):
         self.work_dir = self.get_work_dir()
         self.log_path = os.path.join(self.work_dir, 'training_log.txt')
 
-        self.logger = get_logger('CLoS', self.log_path)
-        self.logger.info('Training {backbone} on {dataset} dataset using CLoS based on the following hyperparameters :'
+        self.logger = get_logger('CLLD', self.log_path)
+        self.logger.info('Training {backbone} on {dataset} dataset using CLLD based on the following hyperparameters :'
                          .format(backbone=self.cfg.encoder['backbone'], dataset=self.cfg.dataset['name']))
         for key in self.cfg.training_parameters:
             self.logger.info(key + ' : ' + str(self.cfg.training_parameters[key]))

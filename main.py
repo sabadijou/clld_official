@@ -1,7 +1,7 @@
 
 from utils.config import convert_config
 from runner.trainer import *
-import configs.clos as cfg
+import configs.clld as cfg
 import argparse
 import random
 import torch
@@ -35,7 +35,7 @@ def main():
     # torch.multiprocessing.spawn(main_worker, nprocs=gpus_per_node, args=(gpus_per_node, args))
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Train CLoS')
+    parser = argparse.ArgumentParser(description='Train CLLD')
     parser.add_argument(
         '--dataset_path', type=str, default=r'/Imagenet/train',
         help='path to image folder')

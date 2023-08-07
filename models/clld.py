@@ -5,9 +5,9 @@ import numpy as np
 import torch
 
 
-class CLoS(nn.Module):
+class CLLD(nn.Module):
     def __init__(self, cfg):
-        super(CLoS, self).__init__()
+        super(CLLD, self).__init__()
         self.cfg = cfg
         self.moment_iter = 0
 

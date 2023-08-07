@@ -1,6 +1,6 @@
 '''
 Source : Torchvision
-Modified for CLoS
+Modified for CLLD
 '''
 
 from torch import nn

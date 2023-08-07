@@ -1,10 +1,10 @@
 from utils.losses import consistency, instance, similarity
-from datasets.imagenet import CLoSDataSet
+from datasets.imagenet import CLLDDataSet
 from torch.utils.data import DataLoader
 import torch.backends.cudnn as cudnn
 from utils.recorder import Recorder
 import torch.distributed as dist
-from models.clos import CLoS
+from models.clld import CLLD
 from einops import rearrange
 from torch.optim import SGD
 from torchlars import LARS
@@ -36,7 +36,7 @@ def main_worker(gpu, gpus_per_node, cfg):
                                     world_size=cfg.distributed_training['world_size'],
                                     rank=cfg.distributed_training['rank'])
 
-    model = CLoS(cfg)
+    model = CLLD(cfg)
     if cfg.distributed_training['distributed']:
         if cfg.device is not None:
             torch.cuda.set_device(cfg.device)
@@ -74,7 +74,7 @@ def main_worker(gpu, gpus_per_node, cfg):
             torch.save({'epoch': epoch + 1,
                         'state_dict': model.state_dict(),
                         'optimizer': optimizer.state_dict(),},
-                        os.path.join(log_recorder.work_dir, 'CLoS_{}.pth.tar'.format(epoch+1)))
+                        os.path.join(log_recorder.work_dir, 'CLLD_{}.pth.tar'.format(epoch+1)))
         dist.barrier()
 
 
@@ -108,11 +108,11 @@ def train_step(model, loader, optimizer, cfg, gpu, log_recorder):
                 (loss_3(proj_pixel_one, target_proj_pixel_two)
                  + loss_3(proj_pixel_two, target_proj_pixel_one)).mean()
 
-        loss_clos = loss1 + loss2 + loss3
+        loss_clld = loss1 + loss2 + loss3
         optimizer.zero_grad()
-        loss_clos.backward()
+        loss_clld.backward()
         optimizer.step()
-        log_recorder.update_loss_stats({'CLoS Loss': loss_clos,
+        log_recorder.update_loss_stats({'CLLD Loss': loss_clld,
                                         'Grouping Loss': loss1 / cfg.training_parameters['coeff_lamda'],
                                         'Similarity Loss': loss2 / cfg.training_parameters['coeff_beta'],
                                         'Instance Loss': loss3 / cfg.training_parameters['coeff_Xi']})
@@ -128,7 +128,7 @@ def lr_scheduler(epoch, optimizer, cfg):
 
 
 def setup_dataset(cfg):
-    dataset = CLoSDataSet(cfg=cfg)
+    dataset = CLLDDataSet(cfg=cfg)
     train_sampler = torch.utils.data.distributed.DistributedSampler(dataset)
     return DataLoader(dataset,
                       batch_size=cfg.training_parameters['batch_size'],

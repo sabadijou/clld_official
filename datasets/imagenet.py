@@ -1,6 +1,6 @@
 '''
 Main Source: https://github.com/dev-sungman/Propagate-Yourself-Pytorch
-Modified for CLoS
+Modified for CLLD
 '''
 
 from utils.random_drop import RandomDrop
@@ -11,7 +11,7 @@ import torch
 import os
 
 
-class CLoSDataSet(Dataset):
+class CLLDDataSet(Dataset):
     def __init__(self, cfg):
         self.root = cfg.dataset['path']
         self.data_size = cfg.dataset['sample_size']
