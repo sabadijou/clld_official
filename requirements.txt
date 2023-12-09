@@ -1,0 +1,6 @@
+certifi==2023.5.7
+elastic-transport==8.4.0
+elasticsearch==8.8.0
+numpy==1.26.2
+Pillow==10.1.0
+urllib3==1.26.16
