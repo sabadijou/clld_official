@@ -15,3 +15,47 @@ Contrastive Learning for Lane Detection via cross-similarity (CLLD), is a self-s
   <i>CLLD architecture</i>
 </p>
 
+## Get started
+1. Clone the repository
+    ```
+    git clone https://github.com/sabadijou/clld_official.git
+    ```
+    We call this directory as `$RESA_ROOT`
+
+2. Create an environment and activate it (We've used conda. but it is optional)
+
+    ```Shell
+    conda create -n clld python=3.9 -y
+    conda activate clld
+    ```
+
+3. Install dependencies
+
+    ```Shell
+    # Install pytorch firstly, the cudatoolkit version should be same in your system. (you can also use pip to install pytorch and torchvision)
+    conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch
+      
+    # Install kornia and einops
+    pip install kornia
+    pip install einops
+
+    # Install other dependencies
+    pip install -r requirements.txt
+    ```
+## Run CLLD
+We conducted pretraining using the training data from `ImageNet`. However, you are free to utilize other datasets and configurations as needed. The configuration file for our approach can be found in the `configs` folder.
+
+Once the dataset and new configurations are in place, you can execute the approach using the following command:
+
+```Shell
+python main.py --dataset_path /Imagenet/train --encoder resnet50 --alpha 1 --batch_size 1024 --world_size 1 --gpus_id 0 1 
+```
+The following is a quick guide on arguments:
+- `dataset_path`: Path to training data directory 
+- `encoder`: Select an encoder for training. `resnet18`, `resnet34`, `resnet50`, `resnet101`, `resnet152`, `resnext50_32x4d`,`resnext101_32x8d`, `wide_resnet50_2`, `wide_resnet101_2`.
+- `alpha`: Cross similarity window size
+- `batch_size`: Select a batch size that suits the GPU infrastructure you are using.
+- `world_size`: For example, if you are training a model on a single machine with 4 GPUs, the world size is 4. If you have 2 machines, each with 4 GPUs, and you use all of them for training, the world size would be 8.
+- `gpus_id`: Please specify all the GPU IDs that you used for training the approach.
+
+  
