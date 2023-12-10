@@ -58,7 +58,10 @@ The following is a quick guide on arguments:
 - `world_size`: For example, if you are training a model on a single machine with 4 GPUs, the world size is 4. If you have 2 machines, each with 4 GPUs, and you use all of them for training, the world size would be 8.
 - `gpus_id`: Please specify all the GPU IDs that you used for training the approach.
 ## Publish weights
-
+Upon completing the training phase, you can execute the command below to prepare the trained weights for use as foundational knowledge in the backbone of a lane detection model.
+```Shell
+python main.py --checkpoint path/to/checkpoint --encoder resnet50 
+```
 
 ## Results
 We specifically chose to evaluate CLLD with U-Net because it is a common encoder-decoder architecture used in various methods that approach lane detection as a segmentation-based problem. In addition, we tested our method using RESA, which is currently the state-of-the-art semantic segmentation lane detection method that is not based on the UNet architecture.This independent validation is necessary to ensure the accuracy of our results. Lastly, we evaluated CLLD using CLRNet, a leading anchor-based lane detection method.
@@ -284,3 +287,9 @@ Performance of CLRNet on CLRNet and TuSimple with different contrastive learning
     </tbody>
 </table>
 
+ ## Acknowledgement
+<!--ts-->
+* [RESA](https://openaccess.thecvf.com/content/CVPR2021/html/Xie_Propagate_Yourself_Exploring_Pixel-Level_Consistency_for_Unsupervised_Visual_Representation_Learning_CVPR_2021_paper.html)
+* [CLRNet](https://github.com/Turoad/CLRNet/tree/main)
+* [UNet](https://arxiv.org/abs/1505.04597)
+<!--te-->
