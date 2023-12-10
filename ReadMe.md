@@ -66,6 +66,11 @@ python main.py --checkpoint path/to/checkpoint --encoder resnet50
 ## Results
 We specifically chose to evaluate CLLD with U-Net because it is a common encoder-decoder architecture used in various methods that approach lane detection as a segmentation-based problem. In addition, we tested our method using RESA, which is currently the state-of-the-art semantic segmentation lane detection method that is not based on the UNet architecture.This independent validation is necessary to ensure the accuracy of our results. Lastly, we evaluated CLLD using CLRNet, a leading anchor-based lane detection method.
 
+<p align="center">
+  <img src="utils/images/visualized_results.jpg" alt="Visualized results" style="width:1024px;"><br>
+  <i>Visualized results</i>
+</p>
+
 Performance of UNet on CuLane and TuSimple with different contrastive learnings.
 
 
