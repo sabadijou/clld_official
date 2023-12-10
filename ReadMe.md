@@ -42,7 +42,7 @@ Contrastive Learning for Lane Detection via cross-similarity (CLLD), is a self-s
     # Install other dependencies
     pip install -r requirements.txt
     ```
-## Run CLLD
+## How to Run CLLD
 We conducted pretraining using the training data from `ImageNet`. However, you are free to utilize other datasets and configurations as needed. The configuration file for our approach can be found in the `configs` folder.
 
 Once the dataset and new configurations are in place, you can execute the approach using the following command:
@@ -57,13 +57,13 @@ The following is a quick guide on arguments:
 - `batch_size`: Select a batch size that suits the GPU infrastructure you are using.
 - `world_size`: For example, if you are training a model on a single machine with 4 GPUs, the world size is 4. If you have 2 machines, each with 4 GPUs, and you use all of them for training, the world size would be 8.
 - `gpus_id`: Please specify all the GPU IDs that you used for training the approach.
-## Publish weights
+## How to publish weights
 Upon completing the training phase, you can execute the command below to prepare the trained weights for use as foundational knowledge in the backbone of a lane detection model.
 ```Shell
 python main.py --checkpoint path/to/checkpoint --encoder resnet50 
 ```
 
-## Results
+## Our experiments
 We specifically chose to evaluate CLLD with U-Net because it is a common encoder-decoder architecture used in various methods that approach lane detection as a segmentation-based problem. In addition, we tested our method using RESA, which is currently the state-of-the-art semantic segmentation lane detection method that is not based on the UNet architecture.This independent validation is necessary to ensure the accuracy of our results. Lastly, we evaluated CLLD using CLRNet, a leading anchor-based lane detection method.
 
 <p align="center">
