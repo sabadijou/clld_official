@@ -57,5 +57,230 @@ The following is a quick guide on arguments:
 - `batch_size`: Select a batch size that suits the GPU infrastructure you are using.
 - `world_size`: For example, if you are training a model on a single machine with 4 GPUs, the world size is 4. If you have 2 machines, each with 4 GPUs, and you use all of them for training, the world size would be 8.
 - `gpus_id`: Please specify all the GPU IDs that you used for training the approach.
+## Publish weights
 
-  
+
+## Results
+We specifically chose to evaluate CLLD with U-Net because it is a common encoder-decoder architecture used in various methods that approach lane detection as a segmentation-based problem. In addition, we tested our method using RESA, which is currently the state-of-the-art semantic segmentation lane detection method that is not based on the UNet architecture.This independent validation is necessary to ensure the accuracy of our results. Lastly, we evaluated CLLD using CLRNet, a leading anchor-based lane detection method.
+
+Performance of UNet on CuLane and TuSimple with different contrastive learnings.
+
+
+<table>
+    <thead>
+        <tr>
+            <th><strong>Method</strong></th>
+            <th><strong># Epoch</strong></th>
+            <th><strong>Precision (CuLane)</strong></th>
+            <th><strong>Recall (CuLane)</strong></th>
+            <th><strong>F1-measure (CuLane)</strong></th>
+            <th><strong>Accuracy (TuSimple)</strong></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>PixPro</td>
+            <td>100</td>
+            <td>73.68</td>
+            <td>67.15</td>
+            <td>70.27</td>
+            <td>95.92</td>
+        </tr>
+        <tr>
+            <td>VICRegL</td>
+            <td>300</td>
+            <td>67.75</td>
+            <td>63.43</td>
+            <td>65.54</td>
+            <td>93.58</td>
+        </tr>
+        <tr>
+            <td>DenseCL</td>
+            <td>200</td>
+            <td>63.8</td>
+            <td>58.4</td>
+            <td>60.98</td>
+            <td>96.13</td>
+        </tr>
+        <tr>
+            <td>MoCo-V2</td>
+            <td>200</td>
+            <td>63.08</td>
+            <td>57.74</td>
+            <td>60.29</td>
+            <td>96.04</td>
+        </tr>
+        <tr>
+            <td>CLLD (α=1)</td>
+            <td>100</td>
+            <td>71.98</td>
+            <td>69.2</td>
+            <td>70.56</td>
+            <td>95.9</td>
+        </tr>
+        <tr>
+            <td>CLLD (α=2)</td>
+            <td>100</td>
+            <td>70.69</td>
+            <td>69.36</td>
+            <td>70.02</td>
+            <td>95.98</td>
+        </tr>
+        <tr>
+            <td>CLLD (α=3)</td>
+            <td>100</td>
+            <td>71.31</td>
+            <td>69.59</td>
+            <td>70.43</td>
+            <td>96.17</td>
+        </tr>
+    </tbody>
+</table>
+
+Performance of RESA on CuLane and TuSimple with different contrastive learnings.
+
+<table>
+    <thead>
+        <tr>
+            <th><strong>Method</strong></th>
+            <th><strong># Epoch</strong></th>
+            <th><strong>Precision (CuLane)</strong></th>
+            <th><strong>Recall (CuLane)</strong></th>
+            <th><strong>F1-measure (CuLane)</strong></th>
+            <th><strong>Accuracy (TuSimple)</strong></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>PixPro</td>
+            <td>100</td>
+            <td>77.41</td>
+            <td>73.69</td>
+            <td>75.51</td>
+            <td>96.6</td>
+        </tr>
+        <tr>
+            <td>VICRegL</td>
+            <td>300</td>
+            <td>76.27</td>
+            <td>69.58</td>
+            <td>72.77</td>
+            <td>96.18</td>
+        </tr>
+        <tr>
+            <td>DenseCL</td>
+            <td>200</td>
+            <td>77.67</td>
+            <td>73.51</td>
+            <td>75.53</td>
+            <td>96.28</td>
+        </tr>
+        <tr>
+            <td>MoCo-V2</td>
+            <td>200</td>
+            <td>78.12</td>
+            <td>73.36</td>
+            <td>75.66</td>
+            <td>96.56</td>
+        </tr>
+        <tr>
+            <td>CLLD (α=1)</td>
+            <td>100</td>
+            <td>79.01</td>
+            <td>72.99</td>
+            <td>75.88</td>
+            <td>96.74</td>
+        </tr>
+        <tr>
+            <td>CLLD (α=2)</td>
+            <td>100</td>
+            <td>78</td>
+            <td>73.45</td>
+            <td>75.66</td>
+            <td>96.78</td>
+        </tr>
+        <tr>
+            <td>CLLD (α=3)</td>
+            <td>100</td>
+            <td>78.34</td>
+            <td>74.29</td>
+            <td>76.26</td>
+            <td>96.81</td>
+        </tr>
+    </tbody>
+</table>
+
+Performance of CLRNet on CLRNet and TuSimple with different contrastive learnings.
+
+
+<table>
+    <thead>
+        <tr>
+            <th><strong>Method</strong></th>
+            <th><strong># Epoch</strong></th>
+            <th><strong>Precision (CuLane)</strong></th>
+            <th><strong>Recall (CuLane)</strong></th>
+            <th><strong>F1-measure (CuLane)</strong></th>
+            <th><strong>Accuracy (TuSimple)</strong></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>PixPro</td>
+            <td>100</td>
+            <td>89.19</td>
+            <td>70.39</td>
+            <td>78.67</td>
+            <td>93.88</td>
+        </tr>
+        <tr>
+            <td>VICRegL</td>
+            <td>300</td>
+            <td>87.72</td>
+            <td>71.15</td>
+            <td>78.72</td>
+            <td>89.01</td>
+        </tr>
+        <tr>
+            <td>DenseCL</td>
+            <td>200</td>
+            <td>88.07</td>
+            <td>69.67</td>
+            <td>77.8</td>
+            <td>85.15</td>
+        </tr>
+        <tr>
+            <td>MoCo-V2</td>
+            <td>200</td>
+            <td>88.91</td>
+            <td>71.02</td>
+            <td>78.96</td>
+            <td>93.87</td>
+        </tr>
+        <tr>
+            <td>CLLD (α=1)</td>
+            <td>100</td>
+            <td>88.72</td>
+            <td>71.33</td>
+            <td>79.09</td>
+            <td>90.68</td>
+        </tr>
+        <tr>
+            <td>CLLD (α=2)</td>
+            <td>100</td>
+            <td>87.95</td>
+            <td>71.44</td>
+            <td>78.84</td>
+            <td>93.48</td>
+        </tr>
+        <tr>
+            <td>CLLD (α=3)</td>
+            <td>100</td>
+            <td>88.59</td>
+            <td>71.73</td>
+            <td>79.27</td>
+            <td>94.25</td>
+        </tr>
+    </tbody>
+</table>
+
